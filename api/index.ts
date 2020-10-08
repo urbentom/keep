@@ -66,12 +66,21 @@ const start = async () => {
 			},
 			Mutation: {
 				createNote: async (root, args, context, info) => {
-					console.log('Create Note', args);
-					const res = await Notes.insertOne(args)
-					return res.ops[0]
+					try{
+						const res = await Notes.insertOne(args)
+						return res.ops[0]
+					}
+					catch(error){
+						console.error('error', error)
+						return {
+							_id: "null",
+							title: "null",
+							content: "null"
+						}
+					}
+					
 				},
 				removeNote: async (root, args) => {
-					console.log('Remove Note', args);
 					try{
 						const res = await Notes.deleteOne({_id : ObjectId(args._id)})
 
@@ -82,7 +91,7 @@ const start = async () => {
 						return { message: `${args._id} was successfully removed.`}
 					}
 					catch(error){
-						console.log('error', error)
+						console.error('error', error)
 						return { message: `Could not remove note ${args._id}.`}
 					}
 				},
