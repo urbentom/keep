@@ -19,7 +19,9 @@ const start = async () => {
 
 		// Setup Express App + Middleware
 		const app = express();
-		app.use(cors());
+		app.use(cors({
+			origin: 'http://localhost:3000'
+		}));
 		app.use(bodyParser.json());
 		app.use((req, res, next) =>{
 			let date = new Date().toString();
@@ -102,7 +104,12 @@ const start = async () => {
 		const server = new ApolloServer({
 			typeDefs,
 			resolvers,
+			cors: cors({
+				origin: 'http://localhost:3000'
+			}),
 		});
+
+
 		server.applyMiddleware({ app, path: '/graphql' });
 
 		app.use('/', ( req, res ) => {
