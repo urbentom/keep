@@ -106,3 +106,5 @@ dist
 api/package-lock.json
 
 .docker/
+
+frontend/package-lock.json
