@@ -40,6 +40,9 @@ const start = async () => {
 				_id: String
 				title: String
 				content: String
+				favourite: Boolean
+				created: String
+				updated: String 
 			}
 
 			type Message {
@@ -60,10 +63,10 @@ const start = async () => {
 		const resolvers = {
 			Query: {
 				note: async (root, {_id}) => {
-					return await (Notes.findOne(ObjectId(_id)))
+					return await (Notes.findOne(ObjectId(_id)));
 				},
 				notes: async () => {
-					return await (Notes.find({}).toArray());
+					return await Notes.find({}).toArray()
 				}
 			},
 			Mutation: {
