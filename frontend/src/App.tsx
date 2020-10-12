@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { AxiosResponse } from 'axios';
-import './App.css';
+import styled from 'styled-components';
 
+import Navigation from './components/navigation'
 import NotePreview from './components/note-preview';
 import Request from './helpers/request';
 interface Note {
 	_id: string,
 	title: string,
-	content: string
+	content: string,
+	favourite: boolean,
+	updated: number
 }
 
 type AppProps = {}
@@ -33,7 +36,7 @@ export default class App extends Component< AppProps, AppState> {
 		const request = new Request('http://localhost:3001')
 		const getNotes = 
 			{
-				"query": "{ notes { _id title content } }"
+				"query": "{ notes { _id title content favourite updated } }"
 			}
 
 
@@ -53,20 +56,39 @@ export default class App extends Component< AppProps, AppState> {
 
 	}
 
+	onNoteDelete = (note:Note) => {
+
+	}
+
+	onNoteEdited = (note:Note) => {
+
+	}
+
+	KeepContainer = styled.div`
+		display: flex;
+	`
+
+	NoteContainer = styled.div`
+		display: grid;
+	`
+
 	render(){
 
 		return (
-			<div>
+			<this.KeepContainer>
+				<Navigation/>
+				<this.NoteContainer>
 
 				{
 					this.state.notes.map( (note:Note) => {
-
-						return ( <NotePreview title={note.title} content={note.content} /> )
-
+					
+						return ( <NotePreview note={note} onNoteDelete={this.onNoteDelete} onNoteEdited={this.onNoteEdited} /> )
+					
 					})	
 				}
 
-			</div>
+				</this.NoteContainer>
+			</this.KeepContainer>
 		)
 
 	}
