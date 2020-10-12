@@ -19,7 +19,9 @@ const start = async () => {
 
 		// Setup Express App + Middleware
 		const app = express();
-		app.use(cors());
+		app.use(cors({
+			origin: 'http://localhost:3000'
+		}));
 		app.use(bodyParser.json());
 		app.use((req, res, next) =>{
 			let date = new Date().toString();
@@ -38,6 +40,9 @@ const start = async () => {
 				_id: String
 				title: String
 				content: String
+				favourite: Boolean
+				created: String
+				updated: String 
 			}
 
 			type Message {
@@ -58,20 +63,29 @@ const start = async () => {
 		const resolvers = {
 			Query: {
 				note: async (root, {_id}) => {
-					return await (Notes.findOne(ObjectId(_id)))
+					return await (Notes.findOne(ObjectId(_id)));
 				},
 				notes: async () => {
-					return await (Notes.find({}).toArray());
+					return await Notes.find({}).toArray()
 				}
 			},
 			Mutation: {
 				createNote: async (root, args, context, info) => {
-					console.log('Create Note', args);
-					const res = await Notes.insertOne(args)
-					return res.ops[0]
+					try{
+						const res = await Notes.insertOne(args)
+						return res.ops[0]
+					}
+					catch(error){
+						console.error('error', error)
+						return {
+							_id: "null",
+							title: "null",
+							content: "null"
+						}
+					}
+					
 				},
 				removeNote: async (root, args) => {
-					console.log('Remove Note', args);
 					try{
 						const res = await Notes.deleteOne({_id : ObjectId(args._id)})
 
@@ -82,7 +96,7 @@ const start = async () => {
 						return { message: `${args._id} was successfully removed.`}
 					}
 					catch(error){
-						console.log('error', error)
+						console.error('error', error)
 						return { message: `Could not remove note ${args._id}.`}
 					}
 				},
@@ -93,7 +107,12 @@ const start = async () => {
 		const server = new ApolloServer({
 			typeDefs,
 			resolvers,
+			cors: cors({
+				origin: 'http://localhost:3000'
+			}),
 		});
+
+
 		server.applyMiddleware({ app, path: '/graphql' });
 
 		app.use('/', ( req, res ) => {
