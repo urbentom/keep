@@ -8,16 +8,16 @@ interface Props {
 }
 
 const NavigationContainer = styled.div`
-    width: 64px;
+    width: 128px;
     height: 100vh;
-    border-right: solid 1px grey;
+    border-right: solid 2px #b5bed1;
 `
 
 export default function Navigation(props:Props) {
 
     return (
         <NavigationContainer>
-            <ComponentIconAdd />
+            <ComponentIconAdd colour="#2c241c" />
         </NavigationContainer>
     )
 } 
