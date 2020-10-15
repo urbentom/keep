@@ -5,13 +5,8 @@ import styled from 'styled-components';
 import Navigation from './components/navigation'
 import NotePreview from './components/note-preview';
 import Request from './helpers/request';
-interface Note {
-	_id: string,
-	title: string,
-	content: string,
-	favourite: boolean,
-	updated: number
-}
+
+import { Note } from './helpers/interfaces';
 
 type AppProps = {}
 
@@ -36,7 +31,7 @@ export default class App extends Component< AppProps, AppState> {
 		const request = new Request('http://localhost:3001')
 		const getNotes = 
 			{
-				"query": "{ notes { _id title content favourite updated } }"
+				"query": "{ notes { _id title content favourite colour updated } }"
 			}
 
 
@@ -57,7 +52,7 @@ export default class App extends Component< AppProps, AppState> {
 	}
 
 	onNoteDelete = (note:Note) => {
-
+		console.log(note);
 	}
 
 	onNoteEdited = (note:Note) => {
@@ -69,7 +64,21 @@ export default class App extends Component< AppProps, AppState> {
 	`
 
 	NoteContainer = styled.div`
-		display: grid;
+		// display: flex;
+		// flex-wrap: wrap;
+		column-width: 260px;
+		column-gap: 5px;
+	`
+
+	NoteTitle = styled.h1`
+		width: 100%;
+		height: fit-content;
+		margin: 0;
+		padding 20px 0;
+	`
+
+	NoteHeader = styled.div`
+		padding 20px;
 	`
 
 	render(){
@@ -77,17 +86,18 @@ export default class App extends Component< AppProps, AppState> {
 		return (
 			<this.KeepContainer>
 				<Navigation/>
-				<this.NoteContainer>
-
-				{
-					this.state.notes.map( (note:Note) => {
-					
-						return ( <NotePreview note={note} onNoteDelete={this.onNoteDelete} onNoteEdited={this.onNoteEdited} /> )
-					
-					})	
-				}
-
-				</this.NoteContainer>
+				<this.NoteHeader>
+					<this.NoteTitle>Notes</this.NoteTitle>
+					<this.NoteContainer>
+						{
+							this.state.notes.map( (note:Note) => {
+							
+								return ( <NotePreview note={note} onNoteDelete={this.onNoteDelete} onNoteEdited={this.onNoteEdited} /> )
+							
+							})	
+						}
+					</this.NoteContainer>
+				</this.NoteHeader>
 			</this.KeepContainer>
 		)
 

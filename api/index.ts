@@ -40,6 +40,7 @@ const start = async () => {
 				_id: String
 				title: String
 				content: String
+				colour: String
 				favourite: Boolean
 				created: String
 				updated: String 
