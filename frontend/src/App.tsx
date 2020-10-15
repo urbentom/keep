@@ -52,7 +52,7 @@ export default class App extends Component< AppProps, AppState> {
 	}
 
 	onNoteDelete = (note:Note) => {
-
+		console.log(note);
 	}
 
 	onNoteEdited = (note:Note) => {

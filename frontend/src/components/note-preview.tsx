@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, MouseEvent } from "react";
 import styled from 'styled-components';
 import ComponentIconEdit from './icons/edit';
 import ComponentIconDelete from './icons/delete';
@@ -7,14 +7,36 @@ import tinycolor from 'tinycolor2';
 
 import { Note } from '../helpers/interfaces';
 
-interface Props {
+type Props = {
     note: Note
-    onNoteFavourite?: any;
-    onNoteDelete?: any;
-    onNoteEdited?: any;
+    onNoteFavourite(note:Note): void
+    onNoteDelete(note:Note): void
+    onNoteEdited(note:Note): void
 }
 
-export default class NotePreview extends Component< Props, {}> {
+type State = {
+    isExtended: boolean;
+    editEnabled: boolean;
+}
+
+export default class NotePreview extends Component< Props, State> {
+
+    static defaultProps = {
+        onNoteDelete: (note:Note) => {},
+        onNoteEdited: (note:Note) => {},
+        onNoteFavourite: (note:Note) => {}
+    }
+
+    constructor(props:Props){
+
+        super(props);
+
+        this.state = {
+            isExtended: false,
+            editEnabled: false,
+        }
+
+    }
 
     NotePreviewDiv = styled.div`
         display: inline-block;
@@ -60,16 +82,34 @@ export default class NotePreview extends Component< Props, {}> {
         display: flex;
     `
 
+    onNotePreviewClick = () => {
+        this.setState({
+            isExtended: !this.state.isExtended
+        })
+
+    }
+
+    onEditClick = () => {
+
+    }
+
+    onDeleteClick = (e:MouseEvent) => {
+        e.stopPropagation();
+        this.props.onNoteDelete(this.props.note)
+    }
+
     render(){
 
+        const NoteText = (!this.state.isExtended)? (this.props.note.content.length > 255) ? this.props.note.content.substr(0, 254) + '...' : this.props.note.content : this.props.note.content;
+
         return (
-            <this.NotePreviewDiv key={this.props.note._id} >
+            <this.NotePreviewDiv key={this.props.note._id} onClick={this.onNotePreviewClick}>
                 <this.NotePreviewH2>{this.props.note.title}</this.NotePreviewH2>
-                <this.NotePreviewP>{(this.props.note.content.length > 255) ? this.props.note.content.substr(0, 254) + ' ...' : this.props.note.content}</this.NotePreviewP>
+                <this.NotePreviewP>{NoteText}</this.NotePreviewP>
                 <this.NotePreviewIconContainer>
                     <this.NotePreviewTime>{moment().format('ll')}</this.NotePreviewTime>
                     <ComponentIconEdit colour={this.props.note.colour} />
-                    <ComponentIconDelete colour={this.props.note.colour} />
+                    <ComponentIconDelete colour={this.props.note.colour} onClick={this.onDeleteClick} />
                 </this.NotePreviewIconContainer>
             </this.NotePreviewDiv>
         )
