@@ -1,13 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, MouseEvent } from 'react';
 import styled from 'styled-components';
 
-interface Props{
+type Props = {
+    onClick(e:MouseEvent): void,
     class?: string,
-    onClick?: any,
     colour?: string,
 }
 
 export default class ComponentIconEdit extends Component< Props, {}> {
+
+    static defaultProps = {
+		onClick: (e:MouseEvent) => {e.stopPropagation()} 
+	}
 
     IconDiv = styled.div`
         height: 18px;
@@ -35,7 +39,7 @@ export default class ComponentIconEdit extends Component< Props, {}> {
 
         return (
     
-            <this.IconDiv>
+            <this.IconDiv onClick={this.props.onClick}>
                 <svg  x="0px" y="0px" viewBox="0 0 24 24">
                     <g>
                         <this.IconPath d="M0.75,24c-0.198,0-0.391-0.08-0.531-0.22c-0.187-0.187-0.262-0.463-0.195-0.72l1.82-6.94
