@@ -1,16 +1,12 @@
-import * as React from "react";
+import React, { Component } from "react";
 import styled from 'styled-components';
 import ComponentIconEdit from './icons/edit';
 import ComponentIconDelete from './icons/delete';
 import moment from 'moment';
+import tinycolor from 'tinycolor2';
 
-interface Note {
-	_id: string,
-	title: string,
-	content: string,
-	favourite: boolean,
-	updated: number
-}
+import { Note } from '../helpers/interfaces';
+
 interface Props {
     note: Note
     onNoteFavourite?: any;
@@ -18,56 +14,66 @@ interface Props {
     onNoteEdited?: any;
 }
 
-const NotePreviewDiv = styled.div`
-    padding: 18px;
-    margin: 10px;
-    width: 250px;
-    border-radius: 10px;
-    background-color: teal;
-    text-align: left;
-    cursor: pointer;
-`
+export default class NotePreview extends Component< Props, {}> {
 
-const NotePreviewH2 = styled.h2`
-    margin: 0 0 0.5em 0;
-    font-size: 1.2em;
-    color: #ffffff;
-    font-family: 'Lato', sans-serif;
-    font-weight: 400;
-`
+    NotePreviewDiv = styled.div`
+        display: inline-block;
+        padding: 24px;
+        margin: 10px 0;
+        width: 250px;
+        border-radius: 10px;
+        background-color: ${props => this.props.note.colour};
+        text-align: left;
+        cursor: pointer;
+        // height: max-content;
+        transition: background-color 0.5s ease-in-out;
+        &:hover{
+            transition: background-color 0.5s ease-in-out;
+            background-color: ${props => tinycolor(this.props.note.colour).lighten(2).toHexString()};
+        }
+    `
 
-const NotePreviewP = styled.p`
-    margin: 0;
-    font-size: 1em;
-    color: #ffffff;
-    font-family: 'Lato', sans-serif;
-    font-weight: 300;
-    margin-bottom: 1em;
-`
+    NotePreviewH2 = styled.h2`
+        margin: 0 0 1em 0;
+        font-size: 1.2em;
+        color: #2c241c;
+        font-weight: 500;
+    `
 
-const NotePreviewTime = styled.time`
-    margin: auto auto auto 0;
-    font-size: 1em;
-    color: #ffffff;
-    font-family: 'Lato', sans-serif;
-    font-weight: 400;
-`
+    NotePreviewP = styled.p`
+        margin: 0;
+        font-size: 1em;
+        color: #2c241c;
+        font-weight: 300;
+        line-height: 1.4em;
+        margin-bottom: 2em;
+    `
 
-const NotePreviewIconContainer = styled.div`
-    display: flex;
-`
+    NotePreviewTime = styled.time`
+        margin: auto auto auto 0;
+        font-size: 1em;
+        color: #2c241c;
+        font-weight: 400;
+    `
 
-export default function NotePreview(props:Props) {
+    NotePreviewIconContainer = styled.div`
+        display: flex;
+    `
 
-    return (
-        <NotePreviewDiv key={props.note._id} >
-            <NotePreviewH2>{props.note.title}</NotePreviewH2>
-            <NotePreviewP>{(props.note.content.length > 255) ? props.note.content.substr(0, 254) + ' ...' : props.note.content}</NotePreviewP>
-            <NotePreviewIconContainer>
-                <NotePreviewTime>{moment().format('ll')}</NotePreviewTime>
-                <ComponentIconEdit />
-                <ComponentIconDelete />
-            </NotePreviewIconContainer>
-        </NotePreviewDiv>
-    )
+    render(){
+
+        return (
+            <this.NotePreviewDiv key={this.props.note._id} >
+                <this.NotePreviewH2>{this.props.note.title}</this.NotePreviewH2>
+                <this.NotePreviewP>{(this.props.note.content.length > 255) ? this.props.note.content.substr(0, 254) + ' ...' : this.props.note.content}</this.NotePreviewP>
+                <this.NotePreviewIconContainer>
+                    <this.NotePreviewTime>{moment().format('ll')}</this.NotePreviewTime>
+                    <ComponentIconEdit colour={this.props.note.colour} />
+                    <ComponentIconDelete colour={this.props.note.colour} />
+                </this.NotePreviewIconContainer>
+            </this.NotePreviewDiv>
+        )
+
+
+    }
 } 
