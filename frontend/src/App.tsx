@@ -4,14 +4,16 @@ import styled from 'styled-components';
 
 import Navigation from './components/navigation'
 import NotePreview from './components/note-preview';
+import ComponentPopup from './components/popup';
 import Request from './helpers/request';
 
-import { Note } from './helpers/interfaces';
+import { Note, Popup } from './helpers/interfaces';
 
 type AppProps = {}
 
 type AppState = {
 	notes: Note[]
+	popup: Popup
 }
 
 export default class App extends Component< AppProps, AppState> {
@@ -21,7 +23,10 @@ export default class App extends Component< AppProps, AppState> {
 		super(props)
 
 		this.state = {
-			notes: []
+			notes: [],
+			popup: {
+				buttons: []
+			}
 		}
 
 	}
@@ -98,6 +103,7 @@ export default class App extends Component< AppProps, AppState> {
 						}
 					</this.NoteContainer>
 				</this.NoteHeader>
+				<ComponentPopup {...this.state.popup} />
 			</this.KeepContainer>
 		)
 
