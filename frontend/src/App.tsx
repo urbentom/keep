@@ -1,17 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component, MouseEvent } from 'react';
 import { AxiosResponse } from 'axios';
 import styled from 'styled-components';
 
 import Navigation from './components/navigation'
 import NotePreview from './components/note-preview';
+import ComponentPopup from './components/popup';
 import Request from './helpers/request';
 
-import { Note } from './helpers/interfaces';
+import { Note, Popup } from './helpers/interfaces';
+import { getNotes, removeNote } from './helpers/queries';
 
 type AppProps = {}
 
 type AppState = {
 	notes: Note[]
+	popup: Popup
 }
 
 export default class App extends Component< AppProps, AppState> {
@@ -21,22 +24,19 @@ export default class App extends Component< AppProps, AppState> {
 		super(props)
 
 		this.state = {
-			notes: []
+			notes: [],
+			popup: {
+				buttons: []
+			}
 		}
 
 	}
 
+	request = new Request('http://localhost:3001');
+
 	componentDidMount(){
 
-		const request = new Request('http://localhost:3001')
-		const getNotes = 
-			{
-				"query": "{ notes { _id title content favourite colour updated } }"
-			}
-
-
-
-		request.query(getNotes)
+		this.request.query(getNotes())
 			.then( (res:AxiosResponse) => {
 
 				this.setState({
@@ -52,7 +52,55 @@ export default class App extends Component< AppProps, AppState> {
 	}
 
 	onNoteDelete = (note:Note) => {
-		console.log(note);
+
+		this.setState({
+			popup:{
+				title: 'Would you like to delete this Note?',
+				content: `By deleting the Note "${note.title}" you will not be able to recover it's content`,
+				buttons: [
+					{
+						content: 'Delete',
+						primary: true,
+						onClick: (e:MouseEvent) => {
+							this.request.query(removeNote(note._id))
+								.then( (res:AxiosResponse) => {
+
+									// Add notification code here
+									// res.data.data.removeNote.message
+
+									this.setState({
+										notes: this.state.notes.filter( (filteredNote) => {return note._id !== filteredNote._id } )
+									})
+
+									this.closePopup();
+
+								})
+								.catch( (err) => {
+									console.log('err', err)
+								})
+						}
+					},
+					{
+						content: 'Cancel',
+						primary: false,
+						onClick: (e:MouseEvent) => { this.closePopup() }
+					}
+				]
+			}
+		})
+
+			
+		
+	}
+
+	closePopup = () => {
+
+		this.setState({
+			popup: {
+				buttons: []
+			}
+		})
+
 	}
 
 	onNoteEdited = (note:Note) => {
@@ -98,6 +146,7 @@ export default class App extends Component< AppProps, AppState> {
 						}
 					</this.NoteContainer>
 				</this.NoteHeader>
+				<ComponentPopup {...this.state.popup} />
 			</this.KeepContainer>
 		)
 

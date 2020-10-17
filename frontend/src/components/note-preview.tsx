@@ -43,7 +43,7 @@ export default class NotePreview extends Component< Props, State> {
         padding: 24px;
         margin: 10px 0;
         width: 250px;
-        border-radius: 10px;
+        border-radius: 12px;
         background-color: ${props => this.props.note.colour};
         text-align: left;
         cursor: pointer;
