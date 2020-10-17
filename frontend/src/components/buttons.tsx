@@ -1,4 +1,4 @@
-import React, { Component, MouseEvent } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import tinycolor from 'tinycolor2';
 
