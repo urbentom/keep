@@ -14,8 +14,8 @@ type State = {
 export default class ComponentPopup extends Component< Props, State> {
 
     static defaultProps = {
-        title: 'Test Title',
-        content: 'I have some words here so we will write all of these words out and see what they look like.',
+        title: '',
+        content: '',
         buttons: [{
             content: 'Delete',
             primary: true,
@@ -34,6 +34,29 @@ export default class ComponentPopup extends Component< Props, State> {
 
         this.state = {
             isVisible: false,
+        }
+
+    }
+
+    componentDidUpdate(prevProps:Props){
+
+        if(this.props.title !== prevProps.title){
+
+            if(typeof this.props.title !== undefined && this.props.title !== ""){
+
+                this.setState({
+                    isVisible: true
+                })
+                
+            }
+            else{
+
+                this.setState({
+                    isVisible: false
+                })
+
+            }
+
         }
 
     }
@@ -78,7 +101,7 @@ export default class ComponentPopup extends Component< Props, State> {
     PopupButtonsContainer = styled.div`
         text-align: right;
     `
-
+ 
     render(){
 
         if(this.state.isVisible){
